@@ -1,0 +1,41 @@
+#ifndef MOVEMENT_H
+#define MOVEMENT_H
+
+#include <Arduino.h>
+#include <zirconLib.h>
+#include <math.h>
+#include <PID_v1.h>
+#include <CompassSensor.h>
+
+class movement {
+    public:
+        movement(CompassSensor& compassSensor);
+        void movementfunc(double degrees, double speedFactor);
+        double findCorrection();
+        void stopMotors();
+
+        double kp = 0.4;
+        double ki = 0;
+        double kd = 0.002;
+
+        CompassSensor& compassSensor;
+
+        
+    private:
+        PID* myPID;
+
+        double Setpoint, Input, Output;
+
+        const int theta1 = 60;
+        const int theta2 = 180;
+        const int theta3 = 300;    
+        double FrontRight, Back, FrontLeft;
+        double maxVal;
+        double FRpower, Backpower, FLpower;
+        double avg, average, num_sens;
+        int sign(double var);
+
+};
+
+#endif
+
