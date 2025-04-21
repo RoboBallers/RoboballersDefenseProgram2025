@@ -21,6 +21,7 @@ int movement:: sign(double var) {
 }
 
 void movement:: movementfunc(double degrees, double speedFactor) {
+  currMovementAngle = degrees;
     if (degrees >= 360) {
         degrees -= 360;
     }

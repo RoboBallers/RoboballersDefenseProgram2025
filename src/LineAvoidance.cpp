@@ -70,6 +70,7 @@ double LineAvoidance::followingAngle () {
     }
 }
 
+
 std::vector<int> LineAvoidance::getLineValues() {
     std::vector<int> lineValues;
     for (int i = 1; i <= 3; i++) {
@@ -77,6 +78,33 @@ std::vector<int> LineAvoidance::getLineValues() {
     }
     return lineValues;
 }
+
+void LineAvoidance::foundLine() {
+    std::vector<int> values = getLineValues();
+    for (int i = 0; i < 3; i++) {
+        if (values[i] > calibrateVals[i]) {
+            lineFound = true;
+        }
+    }
+}
+
+double LineAvoidance::avoidingLine(int currMovementAngle) {
+    foundLine();
+    if (lineFound) {
+        if (currMovementAngle == 90) {
+            Serial.println("Going to the left to avoid line");
+            return 270;
+        } else if (currMovementAngle == 270) {
+            Serial.println("Going to the right to avoid line");
+            return 90;
+        } else if (currMovementAngle == 180) {
+            Serial.println("Going forward to avoid line");
+            return 0;
+        } 
+    }
+    return -1;
+}
+
 
 void LineAvoidance::calibrateLine() {
     std::vector<int> values = getLineValues();
@@ -87,7 +115,7 @@ void LineAvoidance::calibrateLine() {
 
 
     for (int i = 0; i < 3; i++) {
-        calibrateVals[i] = fmax(calibrateVals[i],values[i] + 30);
+        calibrateVals[i] = fmax(calibrateVals[i],values[i] + 300);
         Serial.println("Calibration sensor " + String(i+1) + ": " + String(calibrateVals[i]));
     }
     Serial.println();

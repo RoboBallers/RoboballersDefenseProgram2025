@@ -14,6 +14,8 @@ class LineAvoidance {
         void calibrateLine();
         std::vector<int> getLineValues();
         double followingAngle();
+        double avoidingLine(int currMovementAngle);
+        void foundLine();
         bool lineFound = false;
 
     private:

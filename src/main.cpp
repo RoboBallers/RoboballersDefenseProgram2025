@@ -39,6 +39,8 @@ bool currentCalibrateLine = LOW;
 bool compassdone = false;
 bool compassDone2 = false;
 
+double universalSpeed = 0.5;
+
 
 void setup() {
     InitializeZircon();
@@ -48,7 +50,7 @@ void setup() {
 
 void lineTesting() {
     for (int i = 1; i <= 3; i++) {
-        Serial.println("Sensor " + String(i) + ": " + String(readBall(i)));
+        Serial.println("Sensor " + String(i) + ": " + String(readLine(i)));
     }
 }
 
@@ -68,106 +70,10 @@ void searchForBallMotion() {
         Movement.movementfunc(270, 0.2);
     }
 
-    if (lostBallTimer > 1700) { 
+    if (lostBallTimer > 1000) { 
         movingRight = !movingRight;
         lostBallTimer = 0;
     }
-}
-
-void process() {
-    currentStart = readButton(1);
-    currentCalibrateLine = readButton(2);
-
-
-    if (currentStart == HIGH && prevStart == LOW) {
-        start = !start;
-        // if (start) {
-        //     motor3(100,1);
-        //     delay(100);
-        // }
-    }
-
-    if (currentCalibrateLine == HIGH && prevCalibrateLine == LOW) {
-        calibrateLine = !calibrateLine;
-        if (calibrateLine) {
-            motor2(100,1);
-            delay(400);
-        }
-    }
-
-    if (start) {
-        if (!ballFinding.isBallVisible()) {
-            Serial.println("Ball not detected - entering search mode");
-            searchingForBall = true;
-            searchForBallMotion();
-            return;
-        } else {
-            searchingForBall = false;
-        }
-
-        double angle = ballFinding.ballAngle();
-
-        Serial.println("Ball Angle: " + String(angle));
-
-        if (20 < angle && angle < 100) {
-            Serial.println("Going right as ball is on the right");
-            Movement.movementfunc(90,0.25);
-        } else if (255 < angle && angle < 345) {
-            Serial.println("Going left as ball Angle is on the left");
-            Movement.movementfunc(270,0.25);
-        } 
-        // else if (105 < angle && angle < 250) {
-        //     Serial.println("Moving back");
-        //     Movement.movementfunc(180, 0.35);
-        // } 
-        // else {
-        //     searchForBallMotion();
-        // }
-        else {
-            Movement.stopMotors();
-        }
-
-        // double lineAngle = line.followingAngle();
-
-        // if (lineAngle != -1) {
-        //     Serial.println("Line detected");
-        //     Movement.movementfunc(lineAngle, 0.2);
-        // }
-
-
-
-        // double lineCalc = line.findingLine();
-
-        // if (lineCalc == 5) {
-        //     Serial.println("No need to move from line");
-        //     Movement.stopMotors();
-        // } else {
-        //     Serial.println("Moving to line");
-        //     Movement.movementfunc(lineCalc,0.35);
-        // }
-
-    } else {
-        Movement.stopMotors();
-        compassSensor.zeroedAngle = compassSensor.getOrientation(); // + 10 previously worked
-
-        compassdone = true;
-        if (compassdone && !compassDone2) {
-            compassDone2 = true;
-            motor1(100,1);
-            delay(400);
-        }
-
-        if (calibrateLine) {
-            Serial.println("Calibrating line");
-            line.calibrateLine();
-        }
-
-    }
-
-    prevStart = currentStart;
-    prevCalibrateLine = currentCalibrateLine;
-
-
 }
 
 void testingCompass() {
@@ -198,19 +104,100 @@ void testingCompass() {
 
     prevStart = currentStart;
     prevCalibrateLine = currentCalibrateLine;
-
-
 }
 
+void process() {
+    currentStart = readButton(1);
+    currentCalibrateLine = readButton(2);
+
+
+    if (currentStart == HIGH && prevStart == LOW) {
+        start = !start;
+        // if (start) {
+        //     motor3(100,1);
+        //     delay(100);
+        // }
+    }
+
+    if (currentCalibrateLine == HIGH && prevCalibrateLine == LOW) {
+        calibrateLine = !calibrateLine;
+        if (calibrateLine) {
+            motor2(100,1);
+            delay(400);
+        }
+    }
+
+    if (start) {
+        if (!ballFinding.isBallVisible()) {
+            Serial.println("Ball not detected - entering search mode");
+            Movement.stopMotors();
+            return;
+        } else {
+            searchingForBall = false;
+        }
+
+        double angle = ballFinding.ballAngle();
+
+        Serial.println("Ball Angle: " + String(angle));
+
+        if (15 < angle && angle < 90) {
+            Serial.println("Going right as ball is on the right");
+            Movement.movementfunc(90,universalSpeed);
+        } else if (270 < angle && angle < 345) {
+            Serial.println("Going left as ball Angle is on the left");
+            Movement.movementfunc(270,universalSpeed);
+        } else if (90 < angle && angle < 270) {
+            Serial.println("Moving back");
+            Movement.movementfunc(180, universalSpeed);
+        }
+        else {
+            Movement.stopMotors();
+        }
+
+        delay(4);
+
+        double lineAngle = line.avoidingLine(Movement.currMovementAngle);
+        
+        if (lineAngle != -1) {
+            Serial.println("Line detected");
+            Movement.movementfunc(lineAngle, universalSpeed);
+            delay(40);
+        }
+
+    } else {
+        Movement.stopMotors();
+        compassSensor.zeroedAngle = compassSensor.getOrientation(); // + 10 previously worked
+
+        compassdone = true;
+        if (compassdone && !compassDone2) {
+            compassDone2 = true;
+            motor1(100,1);
+            delay(400);
+        }
+
+        if (calibrateLine) {
+            Serial.println("Calibrating line");
+            line.calibrateLine();
+        }
+
+    }
+
+    prevStart = currentStart;
+    prevCalibrateLine = currentCalibrateLine;
+
+    line.lineFound = false;
+
+}
 
 void loop () {
     process();
 
-    // testingCompass();
+    // lineTesting();
 
     // IRtesting();
 
     // delay(300);
+    // Serial.println();
 
 }
 

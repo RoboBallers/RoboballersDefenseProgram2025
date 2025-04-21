@@ -20,6 +20,8 @@ class movement {
 
         CompassSensor& compassSensor;
 
+        int currMovementAngle = 0;
+
         
     private:
         PID* myPID;
