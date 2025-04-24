@@ -91,10 +91,10 @@ void LineAvoidance::foundLine() {
 double LineAvoidance::avoidingLine(int currMovementAngle) {
     foundLine();
     if (lineFound) {
-        if (currMovementAngle == 90) {
+        if (currMovementAngle == 100) {
             Serial.println("Going to the left to avoid line");
             return 270;
-        } else if (currMovementAngle == 270) {
+        } else if (currMovementAngle == 260) {
             Serial.println("Going to the right to avoid line");
             return 90;
         } else if (currMovementAngle == 180) {

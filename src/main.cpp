@@ -39,8 +39,7 @@ bool currentCalibrateLine = LOW;
 bool compassdone = false;
 bool compassDone2 = false;
 
-double universalSpeed = 0.5;
-
+double universalSpeed = 0.45;
 
 void setup() {
     InitializeZircon();
@@ -129,6 +128,7 @@ void process() {
 
     if (start) {
         if (!ballFinding.isBallVisible()) {
+            searchingForBall = true;
             Serial.println("Ball not detected - entering search mode");
             Movement.stopMotors();
             return;
@@ -136,34 +136,34 @@ void process() {
             searchingForBall = false;
         }
 
-        double angle = ballFinding.ballAngle();
+        if (!searchingForBall) {
+            double lineAngle = line.avoidingLine(Movement.currMovementAngle);
+            
+            if (lineAngle != -1) {
+                Serial.println("Line detected");
+                Movement.movementfunc(lineAngle, universalSpeed);
+                delay(100);
+            } else {
+                double angle = ballFinding.ballAngle();
 
-        Serial.println("Ball Angle: " + String(angle));
+                Serial.println("Ball Angle: " + String(angle));
 
-        if (15 < angle && angle < 90) {
-            Serial.println("Going right as ball is on the right");
-            Movement.movementfunc(90,universalSpeed);
-        } else if (270 < angle && angle < 345) {
-            Serial.println("Going left as ball Angle is on the left");
-            Movement.movementfunc(270,universalSpeed);
-        } else if (90 < angle && angle < 270) {
-            Serial.println("Moving back");
-            Movement.movementfunc(180, universalSpeed);
+                if (7 < angle && angle < 90) {
+                    Serial.println("Going right as ball is on the right");
+                    Movement.movementfunc(105,universalSpeed);
+                } else if (270 < angle && angle < 353) {
+                    Serial.println("Going left as ball Angle is on the left");
+                    Movement.movementfunc(265,universalSpeed);
+                } else if (90 < angle && angle < 270) {
+                    Serial.println("Moving back");
+                    Movement.movementfunc(180, universalSpeed);
+                } else {
+                    Movement.stopMotors();
+                }
+            // delay(40);
+            }
         }
-        else {
-            Movement.stopMotors();
-        }
-
-        delay(4);
-
-        double lineAngle = line.avoidingLine(Movement.currMovementAngle);
-        
-        if (lineAngle != -1) {
-            Serial.println("Line detected");
-            Movement.movementfunc(lineAngle, universalSpeed);
-            delay(40);
-        }
-
+      
     } else {
         Movement.stopMotors();
         compassSensor.zeroedAngle = compassSensor.getOrientation(); // + 10 previously worked
@@ -193,10 +193,11 @@ void loop () {
     process();
 
     // lineTesting();
+    // Serial.println();
 
     // IRtesting();
 
-    // delay(300);
+    // delay(400);
     // Serial.println();
 
 }

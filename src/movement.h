@@ -14,9 +14,9 @@ class movement {
         double findCorrection();
         void stopMotors();
 
-        double kp = 0.4;
+        double kp = 0.8;
         double ki = 0;
-        double kd = 0.002;
+        double kd = 0.003;
 
         CompassSensor& compassSensor;
 

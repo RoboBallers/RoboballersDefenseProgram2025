@@ -18,8 +18,9 @@ bool BallFinding::isBallVisible() {
             return true;
         }
     }
-    return false;
+    return false; 
 }
+
 
 double BallFinding::ballAngle() {
     double sin_sensors_sum = 0;
