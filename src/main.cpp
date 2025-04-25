@@ -127,41 +127,43 @@ void process() {
     }
 
     if (start) {
+        double lineAngle = line.avoidingLine(Movement.currMovementAngle);
+            
+        if (lineAngle != -1) {
+            Movement.movementfunc(lineAngle, universalSpeed);
+            delay(20);
+        }
+        // if (lineAngle != -1) {
+        //     Serial.println("Line detected");
+        //     delay(10);
+        // }
+
         if (!ballFinding.isBallVisible()) {
             searchingForBall = true;
+            searchForBallMotion();
             Serial.println("Ball not detected - entering search mode");
-            Movement.stopMotors();
-            return;
         } else {
             searchingForBall = false;
         }
 
         if (!searchingForBall) {
-            double lineAngle = line.avoidingLine(Movement.currMovementAngle);
-            
-            if (lineAngle != -1) {
-                Serial.println("Line detected");
-                Movement.movementfunc(lineAngle, universalSpeed);
-                delay(100);
+            double angle = ballFinding.ballAngle();
+
+            Serial.println("Ball Angle: " + String(angle));
+
+            if (7 < angle && angle < 90) {
+                Serial.println("Going right as ball is on the right");
+                Movement.movementfunc(105,universalSpeed);
+            } else if (270 < angle && angle < 353) {
+                Serial.println("Going left as ball Angle is on the left");
+                Movement.movementfunc(265,universalSpeed);
+            } else if (90 < angle && angle < 270) {
+                Serial.println("Moving back");
+                Movement.movementfunc(180, universalSpeed);
             } else {
-                double angle = ballFinding.ballAngle();
-
-                Serial.println("Ball Angle: " + String(angle));
-
-                if (7 < angle && angle < 90) {
-                    Serial.println("Going right as ball is on the right");
-                    Movement.movementfunc(105,universalSpeed);
-                } else if (270 < angle && angle < 353) {
-                    Serial.println("Going left as ball Angle is on the left");
-                    Movement.movementfunc(265,universalSpeed);
-                } else if (90 < angle && angle < 270) {
-                    Serial.println("Moving back");
-                    Movement.movementfunc(180, universalSpeed);
-                } else {
-                    Movement.stopMotors();
-                }
-            // delay(40);
+                Movement.stopMotors();
             }
+            // delay(40);
         }
       
     } else {
@@ -191,6 +193,7 @@ void process() {
 
 void loop () {
     process();
+    // Movement.rotateCorrection(0.3);
 
     // lineTesting();
     // Serial.println();

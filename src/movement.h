@@ -12,6 +12,8 @@ class movement {
         movement(CompassSensor& compassSensor);
         void movementfunc(double degrees, double speedFactor);
         double findCorrection();
+        double findCorrection2();
+        void rotateCorrection(double speedFactor);
         void stopMotors();
 
         double kp = 0.8;
@@ -25,6 +27,7 @@ class movement {
         
     private:
         PID* myPID;
+        PID* myPID2;
 
         double Setpoint, Input, Output;
 

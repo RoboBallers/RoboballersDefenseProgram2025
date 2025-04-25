@@ -96,6 +96,32 @@ double movement::findCorrection() {
   return correction;
 }
 
+// double movement::findCorrection2() {
+//   double correction = 0;
+//   double orientationDiff = compassSensor.currentOffset();
+//   Serial.println("Current Orientation Diff: " + String(orientationDiff));
+
+
+//   Input2 = abs(orientationDiff);
+//   myPID2->Compute();
+
+//   if (abs(orientationDiff) < 5) {
+//     correction = 0;
+//   } else if (orientationDiff > 90) {
+//     correction = -1;
+//   } else if (orientationDiff < -90) {
+//     correction = 1;
+//   } else if (orientationDiff > 0) {
+//     correction = -1 * (Output2 / 100);
+//   } else if (orientationDiff < 0) {
+//     correction = (Output2 / 100);
+//   }
+
+
+//   return correction;
+// }
+
+
 void movement::stopMotors() {
     motor1(0, 0);
     motor2(0, 0);
