@@ -10,9 +10,8 @@
 class movement {
     public:
         movement(CompassSensor& compassSensor);
-        void movementfunc(double degrees, double speedFactor);
-        double findCorrection();
-        double findCorrection2();
+        void movementfunc(double degrees, double speedFactor, double desiredOrientation);
+        double findCorrection(double desiredOrientation);
         void rotateCorrection(double speedFactor);
         void stopMotors();
 

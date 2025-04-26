@@ -20,7 +20,7 @@ int movement:: sign(double var) {
     }
 }
 
-void movement:: movementfunc(double degrees, double speedFactor) {
+void movement:: movementfunc(double degrees, double speedFactor, double desiredOrientation) {
   currMovementAngle = degrees;
     if (degrees >= 360) {
         degrees -= 360;
@@ -36,7 +36,7 @@ void movement:: movementfunc(double degrees, double speedFactor) {
     FLpower  = FrontLeft / maxVal;
 
 
-    double correction = findCorrection();
+    double correction = findCorrection(desiredOrientation);
 
     FRpower += correction;
     Backpower += correction;
@@ -73,11 +73,9 @@ void movement:: movementfunc(double degrees, double speedFactor) {
 }
 
 
-double movement::findCorrection() {
+double movement::findCorrection(double desiredOrientation) {
   double correction = 0;
-  double orientationDiff = compassSensor.currentOffset();
-  Serial.println("Current Orientation Diff: " + String(orientationDiff));
-
+  double orientationDiff = compassSensor.currentOffset() - desiredOrientation;
 
   Input = abs(orientationDiff);
   myPID->Compute();
@@ -87,11 +85,12 @@ double movement::findCorrection() {
   } else if (orientationDiff < -90) {
     correction = 1;
   } else if (orientationDiff > 0) {
-    correction = -1 * (Output / 70);
+    correction = -1 * (Output / 100);
   } else if (orientationDiff < 0) {
-    correction = (Output / 70);
+    correction = (Output / 100);
   }
 
+  // Serial.println("Correction: " + String(correction));
 
   return correction;
 }
