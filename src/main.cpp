@@ -39,7 +39,7 @@ bool currentCalibrateLine = LOW;
 bool compassdone = false;
 bool compassDone2 = false;
 
-double universalSpeed = 0.45;
+double universalSpeed = 0.35;
 
 void setup() {
     InitializeZircon();
@@ -127,15 +127,27 @@ void process() {
     }
 
     if (start) {
-        double lineAngle = line.avoidingLine(Movement.currMovementAngle);
+        // double lineAngle = line.avoidingLine(Movement.currMovementAngle);
             
-        if (lineAngle != -1) {
-            Movement.movementfunc(lineAngle, universalSpeed,0);
-            delay(20);
-        }
+        // if (lineAngle != -1) {
+        //     Movement.movementfunc(lineAngle, universalSpeed,0);
+        //     delay(20);
+        // }
         // if (lineAngle != -1) {
         //     Serial.println("Line detected");
         //     delay(10);
+        // }
+
+        // if (lineAngle != 1) {
+        //     line.foundLine();
+        //     while (line.lineFound) {
+        //         Movement.movementfunc(lineAngle, universalSpeed, 0);
+        //         line.foundLine();
+        //     }
+        // }
+
+        // if (lineAngle != 1) {
+        //     Movement.movementfunc(lineAngle,0.3,0);
         // }
 
         if (!ballFinding.isBallVisible()) {
@@ -154,17 +166,19 @@ void process() {
             if (30 < angle && angle < 90) {
                 Serial.println("Going right as ball is on the right");
                 Movement.movementfunc(105,universalSpeed,0);
-            } else if (270 < angle && angle < 345) {
+            } else if (250 < angle && angle < 320) {
                 Serial.println("Going left as ball Angle is on the left");
                 Movement.movementfunc(265,universalSpeed,0);
-            } else if (90 < angle && angle < 270) {
+            } 
+            else if (90 < angle && angle < 250) {
                 Serial.println("Moving back");
                 Movement.movementfunc(180, universalSpeed,0);
-            } else {
+            } 
+            else {
                 Movement.stopMotors();
             }
             // delay(40);
-        }
+        }//avg(ballAngle,0) from line detection
       
     } else {
         Movement.stopMotors();
@@ -243,7 +257,7 @@ void loop () {
     process();
     // Movement.rotateCorrection(0.3);
     // creatingCompassFunction();
-    Serial.println();
+    // Serial.println();
 
     // lineTesting();
     // Serial.println();

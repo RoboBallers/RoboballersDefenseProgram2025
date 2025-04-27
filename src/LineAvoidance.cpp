@@ -91,16 +91,27 @@ void LineAvoidance::foundLine() {
 double LineAvoidance::avoidingLine(int currMovementAngle) {
     foundLine();
     if (lineFound) {
-        if (currMovementAngle == 105) {
-            Serial.println("Going to the left to avoid line");
-            return 270;
-        } else if (currMovementAngle == 265) {
-            Serial.println("Going to the right to avoid line");
-            return 90;
-        } else if (currMovementAngle == 180) {
-            Serial.println("Going forward to avoid line");
+        // if (currMovementAngle == 105) {
+        //     Serial.println("Going to the left to avoid line");
+        //     return 270;
+        // } else if (currMovementAngle == 265) {
+        //     Serial.println("Going to the right to avoid line");
+        //     return 90;
+        // } else if (currMovementAngle == 180) {
+        //     Serial.println("Going forward to avoid line");
+        //     return 0;
+        // } 
+
+        if (readBall(backLeft) > calibrateVals[backLeft-1] && readBall(backRight) > calibrateVals[backRight-1]) {
+            Serial.println("Going forward");
             return 0;
-        } 
+        } else if (readBall(backLeft) > calibrateVals[backLeft-1]) {
+            Serial.println("Going to right");
+            return 95;
+        } else if (readBall(backRight) > calibrateVals[backRight-1]) {
+            Serial.println("Going left");
+            return 265;
+        }
     }
     return -1;
 }

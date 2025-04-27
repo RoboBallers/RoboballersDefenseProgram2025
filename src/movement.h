@@ -15,9 +15,9 @@ class movement {
         void rotateCorrection(double speedFactor);
         void stopMotors();
 
-        double kp = 0.8;
+        double kp = 1;
         double ki = 0;
-        double kd = 0.003;
+        double kd = 0.0015;
 
         CompassSensor& compassSensor;
 

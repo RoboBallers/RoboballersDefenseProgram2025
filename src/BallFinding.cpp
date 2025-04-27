@@ -27,8 +27,17 @@ double BallFinding::ballAngle() {
     double cos_sensors_sum = 0;
   
     for (int i = 0; i < num_sensors; i++) {
-        sin_sensors_sum += readBall(i+1) * sin(((i+1)*45)*(PI/180));
-        cos_sensors_sum += readBall(i+1) * cos(((i+1)*45)*(PI/180));
+        int sensorVal = readBall(i+1);
+
+        if (i == 7) {
+            sensorVal += 100;
+            if (sensorVal < 0) {
+                sensorVal = 0;
+            }
+        }
+
+        sin_sensors_sum += sensorVal * sin(((i+1)*45)*(PI/180));
+        cos_sensors_sum += sensorVal * cos(((i+1)*45)*(PI/180));
     }
 
 

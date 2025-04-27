@@ -76,6 +76,7 @@ void movement:: movementfunc(double degrees, double speedFactor, double desiredO
 double movement::findCorrection(double desiredOrientation) {
   double correction = 0;
   double orientationDiff = compassSensor.currentOffset() - desiredOrientation;
+  Serial.println("Current offset: " + String(compassSensor.currentOffset()));
 
   Input = abs(orientationDiff);
   myPID->Compute();

@@ -18,15 +18,17 @@ class LineAvoidance {
         void foundLine();
         bool lineFound = false;
 
+
+        int front = 1;
+        int backRight = 2;
+        int backLeft = 3;
+
     private:
         const int white_line = 100;
         double move_angle;
         int calibrateVals[3];
         bool crossLine;
 
-        int front = 1;
-        int backRight = 2;
-        int backLeft = 3;
 
 };
 
