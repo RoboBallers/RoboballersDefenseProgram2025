@@ -39,7 +39,7 @@ bool currentCalibrateLine = LOW;
 bool compassdone = false;
 bool compassDone2 = false;
 
-double universalSpeed = 0.35;
+double universalSpeed = 0.45;
 
 void setup() {
     InitializeZircon();
@@ -127,7 +127,15 @@ void process() {
     }
 
     if (start) {
-        // double lineAngle = line.avoidingLine(Movement.currMovementAngle);
+        double lineAngle = line.avoidingLine(Movement.currMovementAngle);
+
+        // if (lineAngle == 999) {
+        //     while (!line.lineFound) {
+        //         lineAngle += 180;
+        //         Movement.movementfunc(lineAngle, universalSpeed-0.05, 0);
+        //         line.foundLine();
+        //     }
+        // }
             
         // if (lineAngle != -1) {
         //     Movement.movementfunc(lineAngle, universalSpeed,0);
@@ -165,15 +173,26 @@ void process() {
 
             if (30 < angle && angle < 90) {
                 Serial.println("Going right as ball is on the right");
-                Movement.movementfunc(105,universalSpeed,0);
-            } else if (250 < angle && angle < 320) {
+                if (lineAngle != -1) {
+                    Movement.movementfunc((lineAngle + 105)/2, universalSpeed, 0);                
+                } else {
+                    Movement.movementfunc(92,universalSpeed,0);
+                }
+            } else if (240 < angle && angle < 300) {
                 Serial.println("Going left as ball Angle is on the left");
-                Movement.movementfunc(265,universalSpeed,0);
+                if (lineAngle != -1) {
+                    Movement.movementfunc((lineAngle + 265)/2, universalSpeed, 0);                
+                } else {
+                    Movement.movementfunc(268,universalSpeed,0);
+                }
             } 
-            else if (90 < angle && angle < 250) {
-                Serial.println("Moving back");
-                Movement.movementfunc(180, universalSpeed,0);
-            } 
+            // else if (90 < angle && angle < 250) {
+            //     // line.foundLine();
+            //     // while (line.lineFound) {
+            //         Movement.movementfunc(180, universalSpeed,0);
+            //     // }
+            //     Serial.println("Moving back");
+            // } 
             else {
                 Movement.stopMotors();
             }
@@ -265,7 +284,7 @@ void loop () {
     // IRtesting();
 
 
-    // delay(400);
+    // delay(500);
     // Serial.println();
 
 }

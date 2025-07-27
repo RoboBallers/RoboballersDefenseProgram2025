@@ -102,16 +102,45 @@ double LineAvoidance::avoidingLine(int currMovementAngle) {
         //     return 0;
         // } 
 
-        if (readBall(backLeft) > calibrateVals[backLeft-1] && readBall(backRight) > calibrateVals[backRight-1]) {
-            Serial.println("Going forward");
-            return 0;
-        } else if (readBall(backLeft) > calibrateVals[backLeft-1]) {
-            Serial.println("Going to right");
-            return 95;
-        } else if (readBall(backRight) > calibrateVals[backRight-1]) {
-            Serial.println("Going left");
-            return 265;
+        // if (readBall(backLeft) > calibrateVals[backLeft-1] && readBall(backRight) > calibrateVals[backRight-1]) {
+        //     Serial.println("Going forward");
+        //     return 0;
+        // } else if (readBall(backLeft) > calibrateVals[backLeft-1]) {
+        //     Serial.println("Going to right");
+        //     return 95;
+        // } else if (readBall(backRight) > calibrateVals[backRight-1]) {
+        //     Serial.println("Going left");
+        //     return 265;
+        // }
+
+        for (int i = 0; i < 3; i++) {
+            Serial.println("Sensor " + String(i+1) + "calibration: " + String(calibrateVals[i]));
         }
+
+        for (int i = 0; i < 3; i++) {
+            Serial.println("Sensor " + String(i+1) + ": " + String(readLine(i+1)));
+        }
+
+
+
+        Serial.println("Line has been found");
+        if (readLine(front) > calibrateVals[front-1]) {
+            Serial.println("Going forward to avoid line");
+            return 0;
+        } else if (readLine(backLeft) > calibrateVals[backLeft-1] || readLine(backRight) > calibrateVals[backRight-1]) {
+            Serial.println("Going back to avoid line");
+            return 180;
+        } else if (readLine(backLeft) > calibrateVals[backLeft-1] && !(readLine(backRight) > calibrateVals[backRight-1])) {
+            Serial.println("Going right to avoid line");
+            // return 90;
+            return 50;
+        } else if (readLine(backLeft) < calibrateVals[backLeft-1] && readLine(backRight) > calibrateVals[backRight-1]) {
+            Serial.println("Going left to avoid line");
+            // return 270;
+            return 310;
+        }
+    } else {
+        return 999;
     }
     return -1;
 }
